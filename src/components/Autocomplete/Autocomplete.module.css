@@ -1,0 +1,29 @@
+.wrapper {
+    position: relative;
+}
+
+.input {
+    width: 100%;
+    padding: 0.5rem;
+    font-size: 1.2rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+}
+
+.dropdown {
+    border: 1px solid black;
+    border-radius: 8px;
+    position: absolute;
+    width: 100%;
+    padding: 8px;
+}
+
+.dropdownItem {
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.dropdownItem:focus-within {
+    background-color: lightgray;
+    outline: none;
+}
