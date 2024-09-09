@@ -1,5 +1,3 @@
-// import match from "autosuggest-highlight/match";
-// import parse from "autosuggest-highlight/parse";
 import textSearch from '../../utils/textSearch';
 import styles from './Autocomplete.module.css'
 
@@ -35,8 +33,8 @@ function Autocomplete<T>({
         {!loading ? (
           <ul>
             {result.map((item) => {
-              // const matches = match(item, value, { insideWords: true });
-              // const parts = parse(item, matches);
+
+              const parts = textSearch(item, value);
   
               return (
                 <li
@@ -55,8 +53,7 @@ function Autocomplete<T>({
                     }
                   }}
                 >
-                  {/* {textSearch(item, value)} */}
-                  {/* {parts.map((part, index) => (
+                  {parts.map((part, index) => (
                     <span
                       key={index}
                       style={{
@@ -65,7 +62,7 @@ function Autocomplete<T>({
                     >
                       {part.text}
                     </span>
-                  ))} */}
+                  ))}
                 </li>
               );
             })}
