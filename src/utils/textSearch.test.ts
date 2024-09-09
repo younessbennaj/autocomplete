@@ -1,64 +1,135 @@
 import textSearch from "./textSearch";
 import { describe, test, expect } from 'vitest'
 
+//change to this output: [{ text: 'The ', highlight: false }, { text: 'quick', highlight: true }, { text: ' brown fox jumps over the lazy dog', highlight: false }]
+
 describe('textSearch', () => {
   test('empty string', () => {
-    expect(textSearch('', '')).toBe('');
-    expect(textSearch('', 'xyz')).toBe('');
+    // expect(textSearch('', '')).toBe('');
+    expect(textSearch('', '')).toStrictEqual([
+      { text: '', highlight: false },
+    ]);
+    expect(textSearch('', 'xyz')).toStrictEqual(
+      [{ text: '', highlight: false }],
+    )
   });
 
   test('empty query', () => {
-    expect(textSearch('', '')).toBe('');
-    expect(textSearch('The quick brown fox jumps over the lazy dog', '')).toBe(
-      'The quick brown fox jumps over the lazy dog',
-    );
+    expect(textSearch('', '')).toStrictEqual(
+      [{ text: '', highlight: false }],
+    )
+    expect(textSearch('The quick brown fox jumps over the lazy dog', '')).toStrictEqual(
+      [{ text: 'The quick brown fox jumps over the lazy dog', highlight: false }],
+    )
   });
 
   test('no matches', () => {
-    expect(textSearch('The quick brown fox jumps over the lazy dog', '')).toBe(
-      'The quick brown fox jumps over the lazy dog',
+    expect(textSearch('The quick brown fox jumps over the lazy dog', '')).toStrictEqual(
+      [
+        { text: 'The quick brown fox jumps over the lazy dog', highlight: false }
+      ]
     );
     expect(
       textSearch('The quick brown fox jumps over the lazy dog', 'aaa'),
-    ).toBe('The quick brown fox jumps over the lazy dog');
+    ).toStrictEqual(
+      [
+        { text: 'The quick brown fox jumps over the lazy dog', highlight: false }
+      ]
+    );
     expect(
       textSearch('The quick brown fox jumps over the lazy dog', 'abc'),
-    ).toBe('The quick brown fox jumps over the lazy dog');
+    ).toStrictEqual(
+      [
+        { text: 'The quick brown fox jumps over the lazy dog', highlight: false }
+      ]
+    );
     expect(
       textSearch('The quick brown fox jumps over the lazy dog', 'dogo'),
-    ).toBe('The quick brown fox jumps over the lazy dog');
+    ).toStrictEqual(
+      [
+        { text: 'The quick brown fox jumps over the lazy dog', highlight: false }
+      ]
+    );
   });
 
   describe('matches', () => {
     test('exact match', () => {
       expect(
         textSearch('The quick brown fox jumps over the lazy dog', 'quick'),
-      ).toBe('The <b>quick</b> brown fox jumps over the lazy dog');
+      ).toStrictEqual(
+        [
+          { text: 'The ', highlight: false },
+          { text: 'quick', highlight: true },
+          { text: ' brown fox jumps over the lazy dog', highlight: false },
+        ]
+      );
+
       expect(
         textSearch('The quick brown fox jumps over the lazy dog', 'jumps'),
-      ).toBe('The quick brown fox <b>jumps</b> over the lazy dog');
+      ).toStrictEqual(
+        [
+          { text: 'The quick brown fox ', highlight: false },
+          { text: 'jumps', highlight: true },
+          { text: ' over the lazy dog', highlight: false },
+        ]
+      );
+      
     });
 
     test('case-insensitive match', () => {
       expect(
         textSearch('The Quick Brown Fox Jumps Over The Lazy Dog', 'fox'),
-      ).toBe('The Quick Brown <b>Fox</b> Jumps Over The Lazy Dog');
+      ).toStrictEqual(
+        [
+          { text: 'The Quick Brown ', highlight: false },
+          { text: 'Fox', highlight: true },
+          { text: ' Jumps Over The Lazy Dog', highlight: false },
+        ]
+      )
+
       expect(
         textSearch('The Quick Brown Fox Jumps Over The Lazy Dog', 'QUICK'),
-      ).toBe('The <b>Quick</b> Brown Fox Jumps Over The Lazy Dog');
+      ).toStrictEqual(
+        [
+          { text: 'The ', highlight: false },
+          { text: 'Quick', highlight: true },
+          { text: ' Brown Fox Jumps Over The Lazy Dog', highlight: false },
+        ]
+      )
     });
 
     test('partial match', () => {
       expect(
         textSearch('The quick brown fox jumps over the lazy dog', 'jump'),
-      ).toBe('The quick brown fox <b>jump</b>s over the lazy dog');
+      ).toStrictEqual(
+        [
+          { text: 'The quick brown fox ', highlight: false },
+          { text: 'jump', highlight: true },
+          { text: 's over the lazy dog', highlight: false },
+        ]
+      );
+
       expect(
         textSearch('The quick brown fox jumps over the lazy dog', 'he'),
-      ).toBe('T<b>he</b> quick brown fox jumps over t<b>he</b> lazy dog');
+      ).toStrictEqual(
+        [
+          { text: 'T', highlight: false },
+          { text: 'he', highlight: true },
+          { text: ' quick brown fox jumps over t', highlight: false },
+          { text: 'he', highlight: true },
+          { text: ' lazy dog', highlight: false },
+        ]
+      );
+
     });
 
     test('characters do not match the same word more than once', () => {
-      expect(textSearch('aaabbcc', 'aa')).toBe('<b>aa</b>abbcc');
+      expect(textSearch('aaabbcc', 'aa')).toStrictEqual(
+        [
+          { text: 'aa', highlight: true },
+          { text: 'abbcc', highlight: false },
+        ]
+      );
     });
   });
 });

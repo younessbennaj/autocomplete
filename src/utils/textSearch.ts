@@ -26,19 +26,27 @@ export default function textSearch(text: string, query: string) {
          end++
      }
  
-     let highlightedString = ''
+     let highlightedArray = []
+
+     let temp = ''
  
      for(let i = 0; i < text.length; i++) {
-        if(arr[i] && (i === 0 || !arr[i - 1])) {
-            highlightedString = highlightedString + '<b>'
+        if(arr[i] && (i === 0 || !arr[i - 1]) && i > 0) {
+            highlightedArray.push({ text: temp, highlight: false })
+            temp = ''
         }
 
         if(!arr[i] && i > 0 && arr[i - 1]) {
-            highlightedString = highlightedString + '</b>'
+            highlightedArray.push({ text: temp, highlight: true })
+            temp = ''
         }
  
-         highlightedString = highlightedString + text[i]
+        temp = temp + text[i]
      }
+
+    highlightedArray.push({ text: temp, highlight: false })
+
+    console.log(highlightedArray)
       
-     return highlightedString
+     return highlightedArray
  }
