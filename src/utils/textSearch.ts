@@ -1,0 +1,44 @@
+export default function textSearch(text: string, query: string) {
+    const arr = text.split('').map(() => false)
+    const lowerQuery = query.toLocaleLowerCase()
+ 
+     let start = 0;
+     let end = lowerQuery.length - 1 
+     let currentWordParsed = false
+     
+     while(end < text.length) {
+
+        if(text[start] === ' ') {
+            currentWordParsed = false
+            start++
+            end++
+            continue
+        }
+
+         const sliced = text.toLocaleLowerCase().slice(start, end + 1)
+ 
+         if(sliced === lowerQuery && !currentWordParsed) {
+             arr.fill(true, start, end + 1)
+             currentWordParsed = true
+         }
+         
+         start++
+         end++
+     }
+ 
+     let highlightedString = ''
+ 
+     for(let i = 0; i < text.length; i++) {
+        if(arr[i] && (i === 0 || !arr[i - 1])) {
+            highlightedString = highlightedString + '<b>'
+        }
+
+        if(!arr[i] && i > 0 && arr[i - 1]) {
+            highlightedString = highlightedString + '</b>'
+        }
+ 
+         highlightedString = highlightedString + text[i]
+     }
+      
+     return highlightedString
+ }
