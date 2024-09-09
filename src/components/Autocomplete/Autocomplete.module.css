@@ -17,13 +17,3 @@
     width: 100%;
     padding: 8px;
 }
-
-.dropdownItem {
-    padding: 4px 8px;
-    border-radius: 4px;
-}
-
-.dropdownItem:focus-within {
-    background-color: lightgray;
-    outline: none;
-}

@@ -1,0 +1,13 @@
+.autocompleteItem {
+    padding: 4px 8px;
+    border-radius: 4px;
+}
+
+.autocompleteItem:hover {
+    cursor: pointer;
+}
+
+.autocompleteItem:focus-within {
+    background-color: lightgray;
+    outline: none;
+}

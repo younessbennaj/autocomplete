@@ -51,7 +51,7 @@ function App() {
         getSuggestionLabel={(suggestion: User) => suggestion.firstName}
         loading={loading}
         onChange={setSearch}
-        onSuggestionClick={(value) => {
+        onSelect={(value) => {
           alert(`You selected ${value}`);
         }}
         value={search}
