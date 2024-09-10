@@ -45,8 +45,6 @@ export default function textSearch(text: string, query: string) {
      }
 
     highlightedArray.push({ text: temp, highlight: false })
-
-    console.log(highlightedArray)
       
      return highlightedArray
  }

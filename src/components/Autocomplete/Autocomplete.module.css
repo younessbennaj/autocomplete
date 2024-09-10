@@ -17,3 +17,12 @@
     width: 100%;
     padding: 8px;
 }
+
+.skeleton {
+    animation: scale 4s infinite;
+    background: #E5E4E2;
+    height: 20px;
+    width: 100%;
+    border-radius: 4px;
+    margin-top: 12px;
+}

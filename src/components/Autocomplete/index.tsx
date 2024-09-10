@@ -7,6 +7,7 @@ function Autocomplete<T>({
   onChange,
   onSelect,
   value,
+  selected,
   suggestions,
 }: {
   getSuggestionLabel: (suggestion: T) => string;
@@ -14,6 +15,7 @@ function Autocomplete<T>({
   onChange: (value: string) => void;
   onSelect?: (value: string) => void;
   value: string;
+  selected?: string;
   suggestions: T[];
 }) {
   const result = suggestions.map(getSuggestionLabel);
@@ -27,29 +29,34 @@ function Autocomplete<T>({
           onChange(event.target.value);
         }}
         type="text"
-        value={value}
+        value={selected || value}
       />
-      {value ? (
-        <div  className={styles.dropdown}>
-        {!loading ? (
-          <ul>
-            {result.map((item) => {
-
-              return (
-                <AutocompleteItem
-                  item={item}
-                  query={value}
-                  onSelect={onSelect}
-                />
-              )
-            })}
-          </ul>
-  
-        ) : (
-          <p>Loading...</p>
-        )}
+      {value.length > 0 && (
+        <div className={styles.dropdown}>
+          {loading ? (
+            <div>
+              {Array.from({ length: 8 }).map((_, index) => (
+                <div key={index} className={styles.skeleton}></div>
+              ))}
+            </div>
+          ) : 
+            result.length === 0 ? (
+              <p>No results found</p>
+            ):(
+              <ul>
+              {result.map((item) => {
+                return (
+                  <AutocompleteItem
+                    item={item}
+                    query={value}
+                    onSelect={onSelect}
+                  />
+                );
+              })}
+            </ul>
+            )}
         </div>
-      ) : null}
+      )}
     </div>
   );
 }

@@ -29,6 +29,7 @@ function fetchSuggestionsByProductName(search: string): Promise<User[]> {
 
 function App() {
   const [search, setSearch] = useState("");
+  const [selected, setSelected] = useState("");
   const [suggestions, setSuggestions] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
 
@@ -50,10 +51,16 @@ function App() {
       <Autocomplete
         getSuggestionLabel={(suggestion: User) => suggestion.firstName}
         loading={loading}
-        onChange={setSearch}
-        onSelect={(value) => {
-          alert(`You selected ${value}`);
+        onChange={(value) => {
+          setSelected("");
+          setSearch(value);
         }}
+        onSelect={(value) => {
+          setSearch('');
+          setSuggestions([]);
+          setSelected(value);
+        }}
+        selected={selected}
         value={search}
         suggestions={suggestions}
       />

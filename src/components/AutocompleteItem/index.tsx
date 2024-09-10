@@ -19,6 +19,11 @@ function AutocompleteItem({item, query, onSelect}: {
       className={styles.autocompleteItem}
       tabIndex={0}
       onClick={() => onSelect ? onSelect(item) : null}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') {
+          onSelect ? onSelect(item) : null
+        }
+      }}
     >
       {parts.map((part, index) => (
         <span
