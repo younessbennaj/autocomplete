@@ -18,6 +18,7 @@
     padding: 8px;
 }
 
+/* create a separate component with width and height props */
 .skeleton {
     animation: scale 4s infinite;
     background: #E5E4E2;

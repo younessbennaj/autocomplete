@@ -1,5 +1,7 @@
-import styles from './Autocomplete.module.css'
-import AutocompleteItem from '../AutocompleteItem';
+import styles from "./Autocomplete.module.css";
+import AutocompleteItem from "../AutocompleteItem";
+// import { useEffect, useState } from "react";
+// import { useKeyPress } from "../../hooks/useKeyPress";
 
 function Autocomplete<T>({
   getSuggestionLabel,
@@ -20,6 +22,29 @@ function Autocomplete<T>({
 }) {
   const result = suggestions.map(getSuggestionLabel);
 
+  // Alternative implementation for keyboard navigation using custom hook
+  // const [focusedElement, setFocusedElement] = useState<Element | null>(null);
+
+  // useKeyPress(
+  //   "Enter",
+  //   () => {
+  //     focusedElement?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
+  //   },
+  //   focusedElement as HTMLElement
+  // );
+
+  // useEffect(() => {
+  //   function handleFocus() {
+  //     setFocusedElement(document.activeElement);
+  //   }
+
+  //   window.addEventListener("focus", handleFocus, true);
+
+  //   return () => {
+  //     window.removeEventListener("focus", handleFocus, true);
+  //   };
+  // }, []);
+
   return (
     <div className={styles.wrapper}>
       <input
@@ -39,11 +64,10 @@ function Autocomplete<T>({
                 <div key={index} className={styles.skeleton}></div>
               ))}
             </div>
-          ) : 
-            result.length === 0 ? (
-              <p>No results found</p>
-            ):(
-              <ul>
+          ) : result.length === 0 ? (
+            <p>No results found</p>
+          ) : (
+            <ul>
               {result.map((item) => {
                 return (
                   <AutocompleteItem
@@ -54,7 +78,7 @@ function Autocomplete<T>({
                 );
               })}
             </ul>
-            )}
+          )}
         </div>
       )}
     </div>

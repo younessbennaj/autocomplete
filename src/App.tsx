@@ -1,27 +1,27 @@
-import { useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import "./App.css";
 import DATA from "./data.json";
 import Autocomplete from "./components/Autocomplete";
+import { debounce } from "lodash";
 
 type User = {
   firstName: string;
   id: string;
 };
 
-
 function fetchSuggestionsByProductName(search: string): Promise<User[]> {
   return new Promise((resolve) => {
     setTimeout(() => {
       // limit to 10 suggestions
       const suggestions = search
-              ? DATA.result
-                  .filter((item) => {
-                    return item.firstName
-                      .toLowerCase()
-                      .includes(search.toLowerCase());
-                  })
-                  .slice(0, 10)
-              : [];
+        ? DATA.result
+            .filter((item) => {
+              return item.firstName
+                .toLowerCase()
+                .includes(search.toLowerCase());
+            })
+            .slice(0, 10)
+        : [];
       resolve(suggestions);
     }, 1000);
   });
@@ -33,17 +33,24 @@ function App() {
   const [suggestions, setSuggestions] = useState<User[]>([]);
   const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    if (search.length === 0) {
-      setSuggestions([]);
-      return;
-    }
+  const debouncedFetchSuggestions = useMemo(
+    () =>
+      debounce((value: string) => {
+        setLoading(true);
+        fetchSuggestionsByProductName(value).then((suggestions) => {
+          setSuggestions(suggestions);
+          setLoading(false);
+        });
+      }, 500),
+    []
+  );
+
+  function handleSearchChange(value: string) {
+    setSelected("");
+    setSearch(value);
     setLoading(true);
-    fetchSuggestionsByProductName(search).then((suggestions) => {
-      setSuggestions(suggestions);
-      setLoading(false);
-    });
-  }, [search]);
+    debouncedFetchSuggestions(value);
+  }
 
   return (
     <>
@@ -51,12 +58,9 @@ function App() {
       <Autocomplete
         getSuggestionLabel={(suggestion: User) => suggestion.firstName}
         loading={loading}
-        onChange={(value) => {
-          setSelected("");
-          setSearch(value);
-        }}
+        onChange={handleSearchChange}
         onSelect={(value) => {
-          setSearch('');
+          setSearch("");
           setSuggestions([]);
           setSelected(value);
         }}

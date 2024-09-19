@@ -1,27 +1,30 @@
 import { useRef } from "react";
 import textSearch from "../../utils/textSearch";
-import { useKeyPress } from "../../hooks/useKeyPress";
-import styles from './AutocompleteItem.module.css'
+import styles from "./AutocompleteItem.module.css";
 
-function AutocompleteItem({item, query, onSelect}: {
-    item: string,
-    query: string,
-    onSelect?: (value: string) => void;
-  }) {
-    const parts = textSearch(item, query);
-    const ref = useRef<HTMLLIElement>(null);
-  
-    useKeyPress('Enter', () => onSelect ? onSelect(item) : null, ref.current)
-  
-    return (
-      <li
+function AutocompleteItem({
+  item,
+  query,
+  onSelect,
+}: {
+  item: string;
+  query: string;
+  onSelect?: (value: string) => void;
+}) {
+  const parts = textSearch(item, query);
+  const ref = useRef<HTMLLIElement>(null);
+
+  return (
+    <li
       ref={ref}
       className={styles.autocompleteItem}
       tabIndex={0}
-      onClick={() => onSelect ? onSelect(item) : null}
+      onClick={() => (onSelect ? onSelect(item) : null)}
       onKeyDown={(e) => {
-        if (e.key === 'Enter') {
-          onSelect ? onSelect(item) : null
+        if (e.key === "Enter") {
+          if (onSelect) {
+            onSelect(item);
+          }
         }
       }}
     >
@@ -36,7 +39,7 @@ function AutocompleteItem({item, query, onSelect}: {
         </span>
       ))}
     </li>
-    )
-  }
+  );
+}
 
 export default AutocompleteItem;
