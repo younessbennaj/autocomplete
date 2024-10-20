@@ -7,6 +7,7 @@ function AutocompleteItem({
   query,
   onSelect,
 }: {
+  index: number;
   item: string;
   query: string;
   onSelect?: (value: string) => void;
