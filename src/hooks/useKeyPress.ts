@@ -1,16 +1,22 @@
 import { useEffect } from "react";
 
 export function useKeyPress(
-  key: "Enter",
+  key:
+    | "Enter"
+    | "Escape"
+    | "ArrowUp"
+    | "ArrowDown"
+    | "ArrowLeft"
+    | "ArrowRight",
   cb: (e: KeyboardEvent) => void,
-  target: HTMLElement | null,
+  target?: HTMLElement | null,
   ...args: []
 ) {
   useEffect(() => {
-    const t = target ? target : document.body;
+    const t = document.body;
 
     const handleKeydown = (e: KeyboardEvent) => {
-      if (e.key === key && document.activeElement === t) {
+      if (e.key === key) {
         cb(e, ...args);
       }
     };

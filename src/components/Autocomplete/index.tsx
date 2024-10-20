@@ -1,6 +1,8 @@
 import styles from "./Autocomplete.module.css";
 import AutocompleteItem from "../AutocompleteItem";
 import { Search } from "react-feather";
+import { useKeyPress } from "../../hooks/useKeyPress";
+import { useRef, useState } from "react";
 
 function Autocomplete<T>({
   getSuggestionLabel,
@@ -24,6 +26,13 @@ function Autocomplete<T>({
   suggestions: T[];
 }) {
   const result = suggestions.map(getSuggestionLabel);
+  const [isOpen, setIsOpen] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useKeyPress("Escape", () => {
+    setIsOpen(false);
+    inputRef.current?.blur();
+  });
 
   return (
     <div className={styles.wrapper}>
@@ -43,14 +52,25 @@ function Autocomplete<T>({
           autoFocus
           className={styles.input}
           onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            if (event.target.value.length > 0) {
+              setIsOpen(true);
+            } else {
+              setIsOpen(false);
+            }
             onChange(event.target.value);
+          }}
+          onFocus={() => {
+            if (value.length > 0) {
+              setIsOpen(true);
+            }
           }}
           placeholder={placeholder}
           type="text"
+          ref={inputRef}
           value={selected || value}
         />
       </div>
-      {value.length > 0 && (
+      {isOpen && (
         <div className={styles.dropdown}>
           {loading ? (
             <div>
@@ -59,7 +79,9 @@ function Autocomplete<T>({
               ))}
             </div>
           ) : result.length === 0 ? (
-            <p>No results found</p>
+            <div>
+              <p>No results found</p>
+            </div>
           ) : (
             <ul>
               {result.map((item) => {
@@ -67,7 +89,13 @@ function Autocomplete<T>({
                   <AutocompleteItem
                     item={item}
                     query={value}
-                    onSelect={onSelect}
+                    onSelect={() => {
+                      if (onSelect) {
+                        onSelect(item);
+                      }
+
+                      setIsOpen(false);
+                    }}
                   />
                 );
               })}

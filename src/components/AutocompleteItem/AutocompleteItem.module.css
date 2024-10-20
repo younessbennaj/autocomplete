@@ -7,6 +7,10 @@
   cursor: pointer;
 }
 
+.autocompleteItem:hover {
+  background-color: #f3f4f6;
+}
+
 .autocompleteItem:focus-within {
   background-color: #f3f4f6;
   outline: none;

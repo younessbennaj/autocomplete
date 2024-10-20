@@ -19,7 +19,11 @@ function AutocompleteItem({
       ref={ref}
       className={styles.autocompleteItem}
       tabIndex={0}
-      onClick={() => (onSelect ? onSelect(item) : null)}
+      onClick={() => {
+        if (onSelect) {
+          onSelect(item);
+        }
+      }}
       onKeyDown={(e) => {
         if (e.key === "Enter") {
           if (onSelect) {
