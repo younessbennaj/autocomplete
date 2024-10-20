@@ -41,6 +41,7 @@ function App() {
           setSuggestions(suggestions);
           setLoading(false);
         });
+        // add finally and catch to handle errors
       }, 500),
     []
   );
@@ -64,6 +65,8 @@ function App() {
           setSuggestions([]);
           setSelected(value);
         }}
+        label="Username"
+        placeholder="Search by first name"
         selected={selected}
         value={search}
         suggestions={suggestions}

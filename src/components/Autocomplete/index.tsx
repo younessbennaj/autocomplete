@@ -1,61 +1,55 @@
 import styles from "./Autocomplete.module.css";
 import AutocompleteItem from "../AutocompleteItem";
-// import { useEffect, useState } from "react";
-// import { useKeyPress } from "../../hooks/useKeyPress";
+import { Search } from "react-feather";
 
 function Autocomplete<T>({
   getSuggestionLabel,
   loading,
+  label,
   onChange,
   onSelect,
+  placeholder = "Search",
   value,
   selected,
   suggestions,
 }: {
   getSuggestionLabel: (suggestion: T) => string;
   loading: boolean;
+  label?: string;
   onChange: (value: string) => void;
   onSelect?: (value: string) => void;
+  placeholder?: string;
   value: string;
   selected?: string;
   suggestions: T[];
 }) {
   const result = suggestions.map(getSuggestionLabel);
 
-  // Alternative implementation for keyboard navigation using custom hook
-  // const [focusedElement, setFocusedElement] = useState<Element | null>(null);
-
-  // useKeyPress(
-  //   "Enter",
-  //   () => {
-  //     focusedElement?.dispatchEvent(new MouseEvent("click", { bubbles: true }));
-  //   },
-  //   focusedElement as HTMLElement
-  // );
-
-  // useEffect(() => {
-  //   function handleFocus() {
-  //     setFocusedElement(document.activeElement);
-  //   }
-
-  //   window.addEventListener("focus", handleFocus, true);
-
-  //   return () => {
-  //     window.removeEventListener("focus", handleFocus, true);
-  //   };
-  // }, []);
-
   return (
     <div className={styles.wrapper}>
-      <input
-        autoFocus
-        className={styles.input}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-          onChange(event.target.value);
-        }}
-        type="text"
-        value={selected || value}
-      />
+      {label ? (
+        <label className={styles.label} htmlFor="">
+          {label}
+        </label>
+      ) : null}
+      <div className={styles.inputWrapper}>
+        <Search
+          style={{
+            color: "#6b7280",
+          }}
+          size={18}
+        />
+        <input
+          autoFocus
+          className={styles.input}
+          onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+            onChange(event.target.value);
+          }}
+          placeholder={placeholder}
+          type="text"
+          value={selected || value}
+        />
+      </div>
       {value.length > 0 && (
         <div className={styles.dropdown}>
           {loading ? (

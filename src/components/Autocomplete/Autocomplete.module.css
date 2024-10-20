@@ -1,29 +1,62 @@
 .wrapper {
-    position: relative;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .input {
-    width: 100%;
-    padding: 0.5rem;
-    font-size: 1.2rem;
-    border: 1px solid #ccc;
-    border-radius: 0.25rem;
+  width: 100%;
+  font-size: 1rem;
+  border: none;
+}
+
+.input:focus-within {
+  outline: none;
+}
+
+.input::placeholder {
+  color: #d1d5db;
+  font-weight: 400;
 }
 
 .dropdown {
-    border: 1px solid black;
-    border-radius: 8px;
-    position: absolute;
-    width: 100%;
-    padding: 8px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  position: absolute;
+  width: 100%;
+  padding: 8px;
+  top: calc(100% + 8px); /* Le positionne juste en dessous du parent */
+  left: 0;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
 /* create a separate component with width and height props */
 .skeleton {
-    animation: scale 4s infinite;
-    background: #E5E4E2;
-    height: 20px;
-    width: 100%;
-    border-radius: 4px;
-    margin-top: 12px;
+  animation: scale 4s infinite;
+  background: #e5e4e2;
+  height: 20px;
+  width: 100%;
+  border-radius: 4px;
+  margin-top: 12px;
+}
+
+.inputWrapper {
+  display: flex;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  padding: 0.75rem;
+  border-radius: 8px;
+  gap: 0.5rem;
+}
+
+.inputWrapper:focus-within {
+  outline: 2px solid #60a5fa;
+  border-color: transparent;
+}
+
+.label {
+  color: #4b5563;
+  font-size: 14px;
 }

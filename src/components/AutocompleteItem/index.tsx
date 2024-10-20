@@ -32,7 +32,9 @@ function AutocompleteItem({
         <span
           key={index}
           style={{
-            fontWeight: part.highlight ? 700 : 400,
+            borderRadius: "0.25rem",
+            backgroundColor: part.highlight ? "#dbeafe" : "transparent",
+            color: part.highlight ? "#2563eb" : "inherit",
           }}
         >
           {part.text}
