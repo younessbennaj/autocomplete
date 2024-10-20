@@ -56,21 +56,27 @@ function App() {
   return (
     <>
       <h1>Autocomplete</h1>
-      <Autocomplete
-        getSuggestionLabel={(suggestion: User) => suggestion.firstName}
-        loading={loading}
-        onChange={handleSearchChange}
-        onSelect={(value) => {
-          setSearch("");
-          setSuggestions([]);
-          setSelected(value);
+      <div
+        style={{
+          width: "300px",
         }}
-        label="Username"
-        placeholder="Search by first name"
-        selected={selected}
-        value={search}
-        suggestions={suggestions}
-      />
+      >
+        <Autocomplete
+          getSuggestionLabel={(suggestion: User) => suggestion.firstName}
+          loading={loading}
+          onChange={handleSearchChange}
+          onSelect={(value) => {
+            setSearch("");
+            setSuggestions([]);
+            setSelected(value);
+          }}
+          label="Username"
+          placeholder="Search by first name"
+          selected={selected}
+          value={search}
+          suggestions={suggestions}
+        />
+      </div>
     </>
   );
 }

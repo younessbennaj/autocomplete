@@ -73,9 +73,15 @@ function Autocomplete<T>({
       {isOpen && (
         <div className={styles.dropdown}>
           {loading ? (
-            <div>
+            <div className={styles.skeletonWrapper}>
               {Array.from({ length: 8 }).map((_, index) => (
-                <div key={index} className={styles.skeleton}></div>
+                <div
+                  style={{
+                    padding: "12px 16px",
+                  }}
+                >
+                  <div key={index} className={styles.skeleton}></div>
+                </div>
               ))}
             </div>
           ) : result.length === 0 ? (

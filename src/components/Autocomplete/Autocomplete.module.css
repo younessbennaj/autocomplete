@@ -31,14 +31,22 @@
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
 }
 
-/* create a separate component with width and height props */
+@keyframes pulse {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: -135% 0%;
+  }
+}
+
 .skeleton {
-  animation: scale 4s infinite;
-  background: #e5e4e2;
-  height: 20px;
+  animation: pulse 2s infinite;
+  background: linear-gradient(-90deg, #efefef 0%, #fcfcfc 50%, #efefef 100%);
+  background-size: 400% 400%;
+  height: 24px;
   width: 100%;
   border-radius: 4px;
-  margin-top: 12px;
 }
 
 .inputWrapper {
