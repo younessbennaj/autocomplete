@@ -102,6 +102,10 @@ function Autocomplete<T>({
             size={18}
           />
           <input
+            aria-autocomplete="list"
+            aria-controls="popover"
+            aria-expanded={isOpen}
+            aria-haspopup="listbox"
             autoFocus
             className={styles.input}
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,8 +122,9 @@ function Autocomplete<T>({
               }
             }}
             placeholder={placeholder}
-            type="text"
             ref={inputRef}
+            role="combobox"
+            type="text"
             value={selected || value}
           />
         </div>
@@ -143,7 +148,7 @@ function Autocomplete<T>({
                 <p>No results found</p>
               </div>
             ) : (
-              <ul>
+              <ul id="popover" role="listbox">
                 {result.map((item, index) => {
                   return (
                     <AutocompleteItem

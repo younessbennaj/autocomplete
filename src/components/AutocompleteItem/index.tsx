@@ -19,7 +19,7 @@ function AutocompleteItem({
     <li
       ref={ref}
       className={styles.autocompleteItem}
-      tabIndex={0}
+      role="option"
       onClick={() => {
         if (onSelect) {
           onSelect(item);
