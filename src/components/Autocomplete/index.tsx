@@ -50,8 +50,8 @@ function Autocomplete<T>({
   }, []);
 
   useKeyPress("Escape", () => {
+    setActiveIndex(-1);
     setIsOpen(false);
-    inputRef.current?.blur();
   });
 
   useKeyPress("ArrowDown", () => {
@@ -67,6 +67,16 @@ function Autocomplete<T>({
         prevIndex <= 0 ? result.length - 1 : prevIndex - 1
       );
       setIsOpen(true);
+    }
+  });
+
+  useKeyPress("Enter", () => {
+    if (activeIndex >= 0 && activeIndex < result.length) {
+      const selectedItem = result[activeIndex];
+      if (onSelect) {
+        onSelect(selectedItem);
+      }
+      setIsOpen(false);
     }
   });
 
