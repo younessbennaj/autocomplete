@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import textSearch from "../../utils/textSearch";
 import styles from "./AutocompleteItem.module.css";
 
@@ -18,6 +18,12 @@ function AutocompleteItem({
 }) {
   const parts = textSearch(item, query);
   const ref = useRef<HTMLLIElement>(null);
+
+  useEffect(() => {
+    if (isActive && ref.current) {
+      ref.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, [isActive]);
 
   return (
     <li
