@@ -1,12 +1,16 @@
-import { useRef } from "react";
+import { useEffect, useRef } from "react";
 import textSearch from "../../utils/textSearch";
 import styles from "./AutocompleteItem.module.css";
 
 function AutocompleteItem({
+  id,
+  isActive,
   item,
   query,
   onSelect,
 }: {
+  id: string;
+  isActive: boolean;
   index: number;
   item: string;
   query: string;
@@ -15,21 +19,22 @@ function AutocompleteItem({
   const parts = textSearch(item, query);
   const ref = useRef<HTMLLIElement>(null);
 
+  useEffect(() => {
+    if (isActive && ref.current) {
+      ref.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  }, [isActive]);
+
   return (
     <li
+      id={id}
+      aria-selected={isActive ? "true" : "false"}
       ref={ref}
       className={styles.autocompleteItem}
-      tabIndex={0}
+      role="option"
       onClick={() => {
         if (onSelect) {
           onSelect(item);
-        }
-      }}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          if (onSelect) {
-            onSelect(item);
-          }
         }
       }}
     >

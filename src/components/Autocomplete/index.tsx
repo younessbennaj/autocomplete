@@ -26,71 +26,65 @@ function Autocomplete<T>({
   selected?: string;
   suggestions: T[];
 }) {
-  const result = suggestions.map(getSuggestionLabel);
+  const result = suggestions.map(getSuggestionLabel) || [];
+  const [activeIndex, setActiveIndex] = useState(-1);
   const [isOpen, setIsOpen] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  // Hook pour détecter les clics en dehors de l'input et du dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      // Vérifie que containerRef.current n'est pas null avant d'utiliser contains
       if (
         containerRef.current &&
         !containerRef.current.contains(event.target as Node)
       ) {
-        setIsOpen(false); // Ferme le dropdown si on clique en dehors
+        setIsOpen(false);
       }
     };
 
-    // Ajouter l'écouteur d'événement
     document.addEventListener("mousedown", handleClickOutside);
 
-    // Nettoyer l'écouteur d'événement lorsque le composant est démonté
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
   useKeyPress("Escape", () => {
+    setActiveIndex(-1);
     setIsOpen(false);
-    inputRef.current?.blur();
   });
 
-  // Attempt with arrow navigation to improve
+  useKeyPress("ArrowDown", () => {
+    if (result.length > 0) {
+      setActiveIndex((prevIndex) => (prevIndex + 1) % result.length);
+      setIsOpen(true);
+    }
+  });
 
-  // useKeyPress("ArrowDown", () => {
-  //   // if current active element is input, then focus on the first item
-  //   const activeElement = document.activeElement as HTMLElement;
-  //   if (activeElement === inputRef.current) {
-  //     const firstElement = containerRef.current?.querySelector("li");
-  //     if (firstElement) {
-  //       firstElement.focus();
-  //     }
-  //   } else {
-  //     const nextElement = activeElement.nextElementSibling as HTMLElement;
-  //     if (nextElement) {
-  //       nextElement.focus();
-  //     }
-  //   }
-  // });
+  useKeyPress("ArrowUp", () => {
+    if (result.length > 0) {
+      setActiveIndex((prevIndex) =>
+        prevIndex <= 0 ? result.length - 1 : prevIndex - 1
+      );
+      setIsOpen(true);
+    }
+  });
 
-  // useKeyPress("ArrowUp", () => {
-  //   const activeElement = document.activeElement as HTMLElement;
-  //   const prevElement = activeElement.previousElementSibling as HTMLElement;
-
-  //   if (prevElement) {
-  //     prevElement.focus();
-  //   } else {
-  //     inputRef.current?.focus();
-  //   }
-  // });
+  useKeyPress("Enter", () => {
+    if (activeIndex >= 0 && activeIndex < result.length) {
+      const selectedItem = result[activeIndex];
+      if (onSelect) {
+        onSelect(selectedItem);
+      }
+      setIsOpen(false);
+    }
+  });
 
   return (
     <FocusLock disabled={!isOpen} returnFocus autoFocus={isOpen}>
       <div className={styles.wrapper} ref={containerRef}>
         {label ? (
-          <label className={styles.label} htmlFor="">
+          <label className={styles.label} htmlFor="search">
             {label}
           </label>
         ) : null}
@@ -101,9 +95,19 @@ function Autocomplete<T>({
             }}
             size={18}
           />
+
           <input
+            aria-activedescendant={
+              isOpen && activeIndex >= 0 ? `option-${activeIndex}` : ""
+            }
+            aria-autocomplete="list"
+            aria-controls="popover"
+            aria-expanded={isOpen}
+            aria-haspopup="listbox"
+            aria-label={label}
             autoFocus
             className={styles.input}
+            id="search"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
               if (event.target.value.length > 0) {
                 setIsOpen(true);
@@ -118,8 +122,9 @@ function Autocomplete<T>({
               }
             }}
             placeholder={placeholder}
-            type="text"
             ref={inputRef}
+            role="combobox"
+            type="text"
             value={selected || value}
           />
         </div>
@@ -143,10 +148,12 @@ function Autocomplete<T>({
                 <p>No results found</p>
               </div>
             ) : (
-              <ul>
+              <ul id="popover" role="listbox">
                 {result.map((item, index) => {
                   return (
                     <AutocompleteItem
+                      id={`option-${index}`}
+                      isActive={index === activeIndex ? true : false}
                       key={index}
                       index={index}
                       item={item}
