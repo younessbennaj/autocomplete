@@ -3,10 +3,14 @@ import textSearch from "../../utils/textSearch";
 import styles from "./AutocompleteItem.module.css";
 
 function AutocompleteItem({
+  id,
+  isActive,
   item,
   query,
   onSelect,
 }: {
+  id: string;
+  isActive: boolean;
   index: number;
   item: string;
   query: string;
@@ -17,19 +21,14 @@ function AutocompleteItem({
 
   return (
     <li
+      id={id}
+      aria-selected={isActive ? "true" : "false"}
       ref={ref}
       className={styles.autocompleteItem}
       role="option"
       onClick={() => {
         if (onSelect) {
           onSelect(item);
-        }
-      }}
-      onKeyDown={(e) => {
-        if (e.key === "Enter") {
-          if (onSelect) {
-            onSelect(item);
-          }
         }
       }}
     >
