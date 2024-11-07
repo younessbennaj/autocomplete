@@ -1,11 +1,7 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Autocomplete from "../Autocomplete";
-import { debounce } from "lodash";
-
-type Address = {
-  address: string;
-  id: string;
-};
+import { useQuery } from "@tanstack/react-query";
+import { useDebounce } from "@uidotdev/usehooks";
 
 interface AddressFeature {
   properties: {
@@ -39,53 +35,36 @@ async function fetchAddresses(
 function PlaceAutocomplete() {
   const [search, setSearch] = useState("");
   const [selected, setSelected] = useState("");
-  const [suggestions, setSuggestions] = useState<Address[]>([]);
-  const [loading, setLoading] = useState(false);
+  const debouncedSearch = useDebounce(search, 300);
 
-  const debouncedFetchSuggestions = useMemo(
-    () =>
-      debounce((value: string) => {
-        setLoading(true);
-        fetchAddresses(value).then((suggestions) => {
-          console.log(suggestions);
-          setSuggestions(
-            suggestions.map((label, index) => {
-              return {
-                address: label,
-                id: index.toString(),
-              };
-            })
-          );
-          setLoading(false);
-        });
-        // add finally and catch to handle errors
-      }, 500),
-    []
-  );
+  const { data: suggestions, isLoading } = useQuery({
+    enabled: debouncedSearch.length > 3,
+    queryKey: ["query", debouncedSearch],
+    queryFn: () => fetchAddresses(debouncedSearch, 5),
+    staleTime: 12 * 60 * 60 * 1000, // Keeps data fresh for 12 hours
+    gcTime: 24 * 60 * 60 * 1000, // Caches data for 24 hours before removal
+    refetchOnWindowFocus: false, // Prevents refetching when switching window focus
+    refetchOnReconnect: false, // Prevents refetching on network reconnect
+  });
 
   function handleSearchChange(value: string) {
     setSelected("");
     setSearch(value);
-    if (value.length > 3) {
-      setLoading(true);
-      debouncedFetchSuggestions(value);
-    }
   }
   return (
-    <Autocomplete
-      getSuggestionLabel={(suggestion: Address) => suggestion.address}
-      loading={loading}
+    <Autocomplete<string>
+      getSuggestionLabel={(suggestion: string) => suggestion}
+      loading={isLoading}
       onChange={handleSearchChange}
       onSelect={(value) => {
         setSearch("");
-        setSuggestions([]);
         setSelected(value);
       }}
       label="Search for an address"
       placeholder="7 rue de la paix, Paris"
       selected={selected}
       value={search}
-      suggestions={suggestions}
+      suggestions={suggestions ? suggestions : []}
     />
   );
 }
