@@ -1,11 +1,161 @@
 import styles from "./Autocomplete.module.css";
-import AutocompleteItem from "../AutocompleteItem";
+// import AutocompleteItem from "../AutocompleteItem";
 import { Search } from "react-feather";
-import { useKeyPress } from "../../hooks/useKeyPress";
-import { useEffect, useRef, useState } from "react";
-import FocusLock from "react-focus-lock";
+// import { useKeyPress } from "../../hooks/useKeyPress";
+// import { useEffect, useRef, useState } from "react";
 
-function Autocomplete<T>({
+import { createContext, useContext, useEffect, useRef, useState } from "react";
+import { useKeyPress } from "../../hooks/useKeyPress";
+
+import FocusLock from "react-focus-lock";
+import AutocompleteItem from "../AutocompleteItem";
+const AutocompleteContext = createContext<{
+  activeOption: unknown;
+  onChange: (value: unknown) => void;
+  value: unknown;
+  onClose: () => void;
+  isOpen: boolean;
+  setIsOpen: (value: boolean) => void;
+  setActiveOption: (value: unknown) => void;
+}>({
+  activeOption: null,
+  onChange: () => {},
+  value: null,
+  onClose: () => {},
+  isOpen: false,
+  setIsOpen: () => {},
+  setActiveOption: () => {},
+});
+
+export function AutocompleteInput({
+  displayValue,
+  onChange,
+}: {
+  displayValue: (value: unknown) => string;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}) {
+  const { activeOption, setIsOpen, setActiveOption } = useAutocomplete();
+  const [value, setValue] = useState("");
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
+    setValue(event.target.value);
+    onChange(event);
+    setIsOpen(true);
+    setActiveOption(null);
+  }
+
+  return (
+    <input
+      className={styles.inputWrapper}
+      type="text"
+      placeholder="Search"
+      onChange={handleChange}
+      onFocus={() => setIsOpen(true)}
+      ref={inputRef}
+      value={activeOption ? displayValue(activeOption) : value}
+    />
+  );
+}
+
+export function Autocomplete({
+  className,
+  children,
+  onChange,
+  value,
+  onClose,
+}: {
+  className: string;
+  children: React.ReactNode;
+  onChange: (value: unknown) => void;
+  value: unknown;
+  onClose: () => void;
+}) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [activeOption, setActiveOption] = useState<unknown>(null);
+
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (
+        containerRef.current &&
+        !containerRef.current.contains(event.target as Node)
+      ) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  return (
+    <AutocompleteContext.Provider
+      value={{
+        activeOption,
+        isOpen,
+        setIsOpen,
+        onChange,
+        value,
+        onClose,
+        setActiveOption,
+      }}
+    >
+      <div ref={containerRef} className={className}>
+        {children}
+      </div>
+    </AutocompleteContext.Provider>
+  );
+}
+
+function useAutocomplete() {
+  return useContext(AutocompleteContext);
+}
+
+export function AutocompleteOptions({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className: string;
+}) {
+  const { isOpen } = useAutocomplete();
+  if (!isOpen) {
+    return null;
+  }
+  return <ul className={className}>{children}</ul>;
+}
+
+export function AutocompleteOption({
+  className,
+  children,
+  value,
+}: {
+  className: string;
+  children: React.ReactNode;
+  value: unknown;
+}) {
+  const { onChange, onClose, setIsOpen, setActiveOption } = useAutocomplete();
+  return (
+    <li
+      className={className}
+      onClick={() => {
+        setActiveOption(value);
+        setIsOpen(false);
+        onChange(value);
+        onClose();
+      }}
+    >
+      {children}
+    </li>
+  );
+}
+
+export function AutocompleteOld<T>({
   getSuggestionLabel,
   loading,
   label,
@@ -177,4 +327,4 @@ function Autocomplete<T>({
   );
 }
 
-export default Autocomplete;
+// export default Autocomplete;

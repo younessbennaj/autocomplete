@@ -1,81 +1,95 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import "./App.css";
-import DATA from "./data.json";
-import Autocomplete from "./components/Autocomplete";
-import { debounce } from "lodash";
 
-type User = {
-  firstName: string;
-  id: string;
+import {
+  Autocomplete,
+  AutocompleteInput,
+  AutocompleteOption,
+  AutocompleteOptions,
+} from "./components/Autocomplete";
+
+import styles from "./App.module.css";
+
+type Destination = {
+  name: string;
+  id: number;
 };
 
-function fetchSuggestionsByProductName(search: string): Promise<User[]> {
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      // limit to 10 suggestions
-      const suggestions = search
-        ? DATA.result
-            .filter((item) => {
-              return item.firstName
-                .toLowerCase()
-                .includes(search.toLowerCase());
-            })
-            .slice(0, 10)
-        : [];
-      resolve(suggestions);
-    }, 1000);
-  });
-}
+const destinations = [
+  { id: 1, name: "Paris" },
+  { id: 2, name: "Tokyo" },
+  { id: 3, name: "Milan" },
+  { id: 4, name: "Bangkok" },
+  { id: 5, name: "Los Angeles" },
+  { id: 6, name: "New York" },
+  { id: 7, name: "London" },
+  { id: 8, name: "Sydney" },
+  { id: 9, name: "Rome" },
+  { id: 10, name: "Barcelona" },
+  { id: 11, name: "Dubai" },
+  { id: 12, name: "San Francisco" },
+  { id: 13, name: "Berlin" },
+  { id: 14, name: "Istanbul" },
+  { id: 15, name: "Amsterdam" },
+  { id: 16, name: "Prague" },
+  { id: 17, name: "Seoul" },
+  { id: 18, name: "Cape Town" },
+  { id: 19, name: "Vienna" },
+  { id: 20, name: "Singapore" },
+];
 
 function App() {
-  const [search, setSearch] = useState("");
-  const [selected, setSelected] = useState("");
-  const [suggestions, setSuggestions] = useState<User[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [query, setQuery] = useState("");
+  const [selectedDestination, setSelectedDestination] =
+    useState<Destination | null>(null);
 
-  const debouncedFetchSuggestions = useMemo(
-    () =>
-      debounce((value: string) => {
-        setLoading(true);
-        fetchSuggestionsByProductName(value).then((suggestions) => {
-          setSuggestions(suggestions);
-          setLoading(false);
+  const filteredDestination =
+    query === ""
+      ? destinations
+      : destinations.filter((destination) => {
+          return destination.name.toLowerCase().includes(query.toLowerCase());
         });
-        // add finally and catch to handle errors
-      }, 500),
-    []
-  );
-
-  function handleSearchChange(value: string) {
-    setSelected("");
-    setSearch(value);
-    setLoading(true);
-    debouncedFetchSuggestions(value);
-  }
 
   return (
     <>
       <h1>Autocomplete</h1>
+      <p>Selected destination: {selectedDestination?.name}</p>
       <div
         style={{
           width: "300px",
         }}
       >
         <Autocomplete
-          getSuggestionLabel={(suggestion: User) => suggestion.firstName}
-          loading={loading}
-          onChange={handleSearchChange}
-          onSelect={(value) => {
-            setSearch("");
-            setSuggestions([]);
-            setSelected(value);
+          className={styles.wrapper}
+          onChange={(destination) => {
+            const newDestination = destination as Destination;
+            setSelectedDestination(newDestination);
           }}
-          label="Username"
-          placeholder="Search by first name"
-          selected={selected}
-          value={search}
-          suggestions={suggestions}
-        />
+          value={selectedDestination}
+          onClose={() => {
+            setQuery("");
+          }}
+        >
+          <AutocompleteInput
+            displayValue={(destination) =>
+              (destination as Destination)?.name || ""
+            }
+            onChange={(event) => setQuery(event.target.value)}
+          />
+          <AutocompleteOptions className={styles.dropdown}>
+            {filteredDestination.map((destination) => {
+              return (
+                <AutocompleteOption
+                  className={styles.autocompleteItem}
+                  key={destination.id}
+                  value={destination}
+                >
+                  <span>{destination.name}</span>
+                </AutocompleteOption>
+              );
+            })}
+          </AutocompleteOptions>
+        </Autocomplete>
       </div>
     </>
   );
