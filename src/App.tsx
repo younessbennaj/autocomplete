@@ -1,14 +1,12 @@
 import { useState } from "react";
 import "./App.css";
 
-import {
-  Autocomplete,
-  AutocompleteInput,
-  AutocompleteOption,
-  AutocompleteOptions,
-} from "./components/Autocomplete";
+import { Autocomplete } from "./components/Autocomplete";
 
 import styles from "./App.module.css";
+import { AutocompleteInput } from "./components/AutocompleteInput";
+import { AutocompleteOptions } from "./components/AutocompleteOptions";
+import { AutocompleteOption } from "./components/AutocompleteOption";
 
 type Destination = {
   name: string;
@@ -50,6 +48,9 @@ function App() {
           return destination.name.toLowerCase().includes(query.toLowerCase());
         });
 
+  console.log("filteredDestination", filteredDestination);
+  console.log("query", query);
+
   return (
     <>
       <h1>Autocomplete</h1>
@@ -71,6 +72,7 @@ function App() {
           }}
         >
           <AutocompleteInput
+            className={styles.inputWrapper}
             displayValue={(destination) =>
               (destination as Destination)?.name || ""
             }
@@ -82,7 +84,7 @@ function App() {
                 <AutocompleteOption
                   className={styles.autocompleteItem}
                   key={destination.id}
-                  value={destination}
+                  optionValue={destination}
                 >
                   <span>{destination.name}</span>
                 </AutocompleteOption>

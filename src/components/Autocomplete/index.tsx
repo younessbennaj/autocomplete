@@ -9,6 +9,7 @@ import { useKeyPress } from "../../hooks/useKeyPress";
 
 import FocusLock from "react-focus-lock";
 import AutocompleteItem from "../AutocompleteItem";
+
 const AutocompleteContext = createContext<{
   activeOption: unknown;
   onChange: (value: unknown) => void;
@@ -27,35 +28,8 @@ const AutocompleteContext = createContext<{
   setActiveOption: () => {},
 });
 
-export function AutocompleteInput({
-  displayValue,
-  onChange,
-}: {
-  displayValue: (value: unknown) => string;
-  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
-}) {
-  const { activeOption, setIsOpen, setActiveOption } = useAutocomplete();
-  const [value, setValue] = useState("");
-  const inputRef = useRef<HTMLInputElement>(null);
-
-  function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
-    setValue(event.target.value);
-    onChange(event);
-    setIsOpen(true);
-    setActiveOption(null);
-  }
-
-  return (
-    <input
-      className={styles.inputWrapper}
-      type="text"
-      placeholder="Search"
-      onChange={handleChange}
-      onFocus={() => setIsOpen(true)}
-      ref={inputRef}
-      value={activeOption ? displayValue(activeOption) : value}
-    />
-  );
+export function useAutocomplete() {
+  return useContext(AutocompleteContext);
 }
 
 export function Autocomplete({
@@ -82,6 +56,7 @@ export function Autocomplete({
         containerRef.current &&
         !containerRef.current.contains(event.target as Node)
       ) {
+        onClose();
         setIsOpen(false);
       }
     };
@@ -91,7 +66,7 @@ export function Autocomplete({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  }, []);
+  }, [onClose]);
 
   return (
     <AutocompleteContext.Provider
@@ -109,49 +84,6 @@ export function Autocomplete({
         {children}
       </div>
     </AutocompleteContext.Provider>
-  );
-}
-
-function useAutocomplete() {
-  return useContext(AutocompleteContext);
-}
-
-export function AutocompleteOptions({
-  children,
-  className,
-}: {
-  children: React.ReactNode;
-  className: string;
-}) {
-  const { isOpen } = useAutocomplete();
-  if (!isOpen) {
-    return null;
-  }
-  return <ul className={className}>{children}</ul>;
-}
-
-export function AutocompleteOption({
-  className,
-  children,
-  value,
-}: {
-  className: string;
-  children: React.ReactNode;
-  value: unknown;
-}) {
-  const { onChange, onClose, setIsOpen, setActiveOption } = useAutocomplete();
-  return (
-    <li
-      className={className}
-      onClick={() => {
-        setActiveOption(value);
-        setIsOpen(false);
-        onChange(value);
-        onClose();
-      }}
-    >
-      {children}
-    </li>
   );
 }
 
