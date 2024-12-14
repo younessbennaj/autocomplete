@@ -43,12 +43,10 @@ function App() {
 
   const filteredDestination =
     query === ""
-      ? destinations.slice(0, 10)
-      : destinations
-          .filter((destination) => {
-            return destination.name.toLowerCase().includes(query.toLowerCase());
-          })
-          .slice(0, 10);
+      ? destinations
+      : destinations.filter((destination) => {
+          return destination.name.toLowerCase().includes(query.toLowerCase());
+        });
 
   return (
     <>

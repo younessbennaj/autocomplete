@@ -11,6 +11,8 @@ export const AutocompleteContext = createContext<{
   setIsOpen: (value: boolean) => void;
   setActiveIndex: (value: (prevIndex: number) => number) => void;
   setActiveOption: (value: unknown) => void;
+  setSelectedOption: (value: unknown) => void;
+  selectedOption: unknown;
 }>({
   activeIndex: 0,
   activeOption: null,
@@ -21,6 +23,8 @@ export const AutocompleteContext = createContext<{
   setIsOpen: () => {},
   setActiveIndex: () => {},
   setActiveOption: () => {},
+  setSelectedOption: () => {},
+  selectedOption: null,
 });
 
 export function Autocomplete({
@@ -39,6 +43,7 @@ export function Autocomplete({
   const [activeIndex, setActiveIndex] = useState(-1);
   const [isOpen, setIsOpen] = useState(false);
   const [activeOption, setActiveOption] = useState<unknown>(null);
+  const [selectedOption, setSelectedOption] = useState<unknown>(null);
 
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -80,6 +85,8 @@ export function Autocomplete({
         onClose,
         setActiveOption,
         setActiveIndex,
+        selectedOption,
+        setSelectedOption,
       }}
     >
       <div ref={containerRef} className={className}>

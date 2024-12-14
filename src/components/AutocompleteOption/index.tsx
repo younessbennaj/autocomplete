@@ -1,4 +1,4 @@
-import { ComponentProps, useEffect } from "react";
+import { ComponentProps, useEffect, useRef } from "react";
 import { useAutocomplete } from "../../hooks/useAutocomplete";
 
 type AutocompleteOptionsProps = ComponentProps<"li"> & {
@@ -14,8 +14,15 @@ export function AutocompleteOption({
   optionValue,
   index,
 }: AutocompleteOptionsProps) {
-  const { onChange, setIsOpen, setActiveOption, activeIndex, onClose } =
-    useAutocomplete();
+  const ref = useRef<HTMLLIElement>(null);
+  const {
+    onChange,
+    setIsOpen,
+    setActiveOption,
+    activeIndex,
+    onClose,
+    setSelectedOption,
+  } = useAutocomplete();
 
   useEffect(() => {
     if (index === activeIndex) {
@@ -23,11 +30,18 @@ export function AutocompleteOption({
     }
   }, [index, activeIndex, optionValue, setActiveOption]);
 
+  useEffect(() => {
+    if (index === activeIndex && ref.current) {
+      ref.current.scrollIntoView({ behavior: "instant", block: "nearest" });
+    }
+  }, [activeIndex, index]);
+
   return (
     <li
       className={className}
       onClick={() => {
         setActiveOption(optionValue);
+        setSelectedOption(optionValue);
         setIsOpen(false);
         onChange(optionValue);
         if (onClose) {
@@ -36,6 +50,7 @@ export function AutocompleteOption({
       }}
       aria-selected={index === activeIndex ? true : false}
       role="option"
+      ref={ref}
     >
       {children}
     </li>

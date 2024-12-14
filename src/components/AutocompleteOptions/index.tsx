@@ -20,6 +20,7 @@ export function AutocompleteOptions({
     setActiveIndex,
     setIsOpen,
     onChange,
+    setSelectedOption,
   } = useAutocomplete();
 
   useKeyPress("ArrowDown", () => {
@@ -43,6 +44,7 @@ export function AutocompleteOptions({
   useKeyPress("Enter", () => {
     if (activeIndex >= 0 && activeIndex < childrenArray.length) {
       if (onChange) {
+        setSelectedOption(activeOption);
         onChange(activeOption);
       }
 

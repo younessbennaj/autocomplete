@@ -11,8 +11,14 @@ export function AutocompleteInput({
   onChange,
   ...delegated
 }: AutocompleteInput) {
-  const { isOpen, activeOption, setIsOpen, setActiveOption, setActiveIndex } =
-    useAutocomplete();
+  const {
+    isOpen,
+    setIsOpen,
+    setActiveOption,
+    setActiveIndex,
+    setSelectedOption,
+    selectedOption,
+  } = useAutocomplete();
   const [value, setValue] = useState("");
 
   function handleChange(event: React.ChangeEvent<HTMLInputElement>) {
@@ -20,6 +26,7 @@ export function AutocompleteInput({
     onChange(event);
     setIsOpen(true);
     setActiveOption(null);
+    setSelectedOption(null);
     setActiveIndex(() => -1);
   }
 
@@ -37,7 +44,7 @@ export function AutocompleteInput({
         setIsOpen(true);
         onChange(event);
       }}
-      value={activeOption ? displayValue(activeOption) : value}
+      value={selectedOption ? displayValue(selectedOption) : value}
       role="combobox"
     />
   );
