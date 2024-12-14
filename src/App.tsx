@@ -43,13 +43,12 @@ function App() {
 
   const filteredDestination =
     query === ""
-      ? destinations
-      : destinations.filter((destination) => {
-          return destination.name.toLowerCase().includes(query.toLowerCase());
-        });
-
-  console.log("filteredDestination", filteredDestination);
-  console.log("query", query);
+      ? destinations.slice(0, 10)
+      : destinations
+          .filter((destination) => {
+            return destination.name.toLowerCase().includes(query.toLowerCase());
+          })
+          .slice(0, 10);
 
   return (
     <>
@@ -67,15 +66,17 @@ function App() {
             setSelectedDestination(newDestination);
           }}
           value={selectedDestination}
-          onClose={() => {
-            setQuery("");
-          }}
         >
+          <label className={styles.label} htmlFor="destination">
+            Destination
+          </label>
           <AutocompleteInput
+            aria-label={"Destination"}
             className={styles.inputWrapper}
             displayValue={(destination) =>
               (destination as Destination)?.name || ""
             }
+            id="destination"
             onChange={(event) => setQuery(event.target.value)}
           />
           <AutocompleteOptions className={styles.dropdown}>
