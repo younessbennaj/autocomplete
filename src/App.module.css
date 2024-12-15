@@ -1,3 +1,19 @@
+.App {
+  display: flex;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+
+  h1 {
+    text-align: center;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    margin-bottom: 4rem;
+  }
+}
+
 .wrapper {
   position: relative;
   display: flex;
@@ -26,9 +42,11 @@
   position: absolute;
   width: 100%;
   padding: 8px;
-  top: calc(100% + 8px); /* Le positionne juste en dessous du parent */
+  top: calc(100% + 8px);
   left: 0;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  max-height: 400px;
+  overflow: scroll;
 }
 
 @keyframes pulse {
@@ -67,4 +85,27 @@
 .label {
   color: #4b5563;
   font-size: 14px;
+}
+
+.autocompleteItem {
+  padding: 0.75rem 1rem;
+  border-radius: 4px;
+}
+
+.autocompleteItem:hover {
+  cursor: pointer;
+}
+
+.autocompleteItem:hover {
+  background-color: #f3f4f6;
+}
+
+.autocompleteItem:focus-within {
+  background-color: #f3f4f6;
+  outline: none;
+}
+
+.autocompleteItem[aria-selected="true"] {
+  background-color: #f3f4f6;
+  color: #2563eb;
 }
