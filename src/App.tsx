@@ -49,9 +49,19 @@ function App() {
         });
 
   return (
-    <>
-      <h1>Autocomplete</h1>
-      <p>Selected destination: {selectedDestination?.name}</p>
+    <div className={styles.App}>
+      <h1>My Own Headless Autocomplete Component</h1>
+      <h3>
+        Selected destination:{" "}
+        <span
+          style={{
+            color: "#3b82f6",
+          }}
+        >
+          {selectedDestination?.name}
+        </span>
+      </h3>
+
       <div
         style={{
           width: "300px",
@@ -92,7 +102,7 @@ function App() {
           </AutocompleteOptions>
         </Autocomplete>
       </div>
-    </>
+    </div>
   );
 }
 

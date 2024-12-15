@@ -49,6 +49,7 @@ export function AutocompleteOption({
         }
       }}
       aria-selected={index === activeIndex ? true : false}
+      id={`option-${index}`}
       role="option"
       ref={ref}
     >
