@@ -11,11 +11,9 @@
     "test": "vitest"
   },
   "dependencies": {
-    "autosuggest-highlight": "^3.3.4",
     "lodash": "^4.17.21",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-feather": "^2.0.10"
+    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.0",
